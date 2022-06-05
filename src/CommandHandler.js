@@ -50,7 +50,7 @@ class CommandHandler {
 
       const { callback } = commandObject
 
-      callback({ message })
+      callback({ message, args, text: args.join(' ') }) // args array seperating by space
     })
   }
 }
