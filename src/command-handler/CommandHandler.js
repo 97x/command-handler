@@ -14,6 +14,7 @@ class CommandHandler {
 
   readFiles() {
     const files = getAllFiles(this.commandsDir)
+    const validations = this.getValidations('syntax') // access the syntax directory
 
     for (let file of files) {
       const commandObject = require(file)
@@ -23,18 +24,19 @@ class CommandHandler {
       commandName = commandName.split('.')[0]
 
       const command = new Command(commandName, commandObject)
+
+      // loop through each validation and pass in
+      for (const validation of validations) {
+        validation(command)
+      }
+
       this.commands.set(command.commandName, command)
     }
-
-    console.log(this.commands)
   }
 
   messageListener(client) {
-    // Gets all files in the validations directory
-    const validations = getAllFiles(path.join(__dirname, './validations')).map((filePath) => require(filePath))
-    console.log(validations);
-
-    const prefix = '!'
+    const validations = this.getValidations('run-time') // access the run-time directory
+    const prefix = '!' // temp hardcoded prefix for development
 
     client.on('messageCreate', (message) => {
       const { content } = message
@@ -62,6 +64,12 @@ class CommandHandler {
       const { callback } = command.commandObject
       callback(usage)
     })
+  }
+
+  getValidations(folder) {
+    const validations = getAllFiles(path.join(__dirname, `./validations/${folder}`)).map((filePath) => require(filePath))
+
+    return validations
   }
 }
 
