@@ -1,1 +1,1 @@
-A simple DJS command handler for my discord bot. Not yet complete.
+A simple DJS v13 command handler for a future discord bot. Not yet complete.
